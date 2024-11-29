@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
-
+use App\Models\User;
+use App\Models\Book;
+use App\Models\Loan;
 class MigrationTest extends TestCase
 {
     use RefreshDatabase;
@@ -19,21 +21,40 @@ class MigrationTest extends TestCase
         ]), 'Table "books" does not have the correct columns.');
     }
 
-    public function test_members_table_structure()
+
+    public function test_admin_dashboard_displays_correctly()
     {
-        $this->assertTrue(Schema::hasTable('members'), 'Table "members" does not exist.');
+        // Create an admin user
+        $admin = User::factory()->create(['role' => 'admin']);
 
-        $this->assertTrue(Schema::hasColumns('members', [
-            'id', 'nama', 'email', 'password', 'created_at', 'updated_at'
-        ]), 'Table "members" does not have the correct columns.');
-    }
+        // Create some test data
+        User::factory()->count(5)->create(['role' => 'anggota']);
 
-    public function test_loans_table_structure()
-    {
-        $this->assertTrue(Schema::hasTable('loans'), 'Table "loans" does not exist.');
+        // Act as the admin and visit the dashboard
+        $response = $this->actingAs($admin)->get('/dashboard');
 
-        $this->assertTrue(Schema::hasColumns('loans', [
-            'id', 'members_id', 'books_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at', 'updated_at'
-        ]), 'Table "loans" does not have the correct columns.');
+        // Assert the response is successful
+        $response->assertStatus(200);
+
+        // Assert the page contains the expected elements
+        $response->assertSee('Admin Dashboard');
+        $response->assertSee(now()->format('d-m-Y'));
+
+        // Assert statistics are present
+        $response->assertSee('Statistik Buku');
+        $response->assertSee('10'); // Total books
+        $response->assertSee('Statistik Anggota');
+        $response->assertSee('5'); // Total members
+        $response->assertSee('Statistik Peminjaman');
+        $response->assertSee('3'); // Total loans
+
+        // Assert the recent loans table is present
+        $response->assertSee('Peminjaman Terbaru');
+        $response->assertSee('Anggota');
+        $response->assertSee('Buku');
+        $response->assertSee('Tanggal Pinjam');
+        $response->assertSee('Status');
+
+        // You can add more specific assertions here if needed
     }
 }

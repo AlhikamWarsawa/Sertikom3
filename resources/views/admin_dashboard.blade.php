@@ -1,14 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight lg:pl-64">
-            {{ __('Admin Dashboard') }}
-        </h2>
+        <div class="flex justify-between items-center lg:pl-64">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Admin Dashboard') }}
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ now()->format('d-m-Y') }}
+            </p>
+        </div>
     </x-slot>
 
     <div class="py-12 lg:pl-64">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Statistik Buku -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Statistik Buku</h3>
@@ -20,7 +24,6 @@
                     </div>
                 </div>
 
-                <!-- Statistik Anggota -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Statistik Anggota</h3>
@@ -32,7 +35,6 @@
                     </div>
                 </div>
 
-                <!-- Statistik Peminjaman -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Statistik Peminjaman</h3>
@@ -45,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Tabel Peminjaman Terbaru -->
             <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Peminjaman Terbaru</h3>
@@ -66,7 +67,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $loan->books_name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{{ $loan->tanggal_pinjam }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                                        @if($loan->return_date)
+                                        @if($loan->status == 'dikembalikan')
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
                                                 Dikembalikan
                                             </span>

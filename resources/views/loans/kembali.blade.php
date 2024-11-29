@@ -20,12 +20,13 @@
 
                         <div>
                             <label for="tanggal_pinjam" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Pinjam</label>
-                            <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" value="{{ $loan->tanggal_pinjam }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" readonly>
+                            <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" value="{{ $loan->tanggal_pinjam }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                         </div>
 
                         <div>
                             <label for="tanggal_kembali" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kembali</label>
-                            <input type="date" name="tanggal_kembali" id="tanggal_kembali" value="{{ now()->format('Y-m-d') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <input type="date" name="tanggal_kembali" id="tanggal_kembali" value="{{ $loan->tanggal_kembali }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
+                            <p id="date-error" class="mt-2 text-sm text-red-600 dark:text-red-500" style="display: none;">Tanggal kembali tidak boleh sebelum tanggal pinjam.</p>
                         </div>
                     </div>
 
@@ -37,3 +38,30 @@
         </div>
     </section>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tanggalPinjam = document.getElementById('tanggal_pinjam');
+        const tanggalKembali = document.getElementById('tanggal_kembali');
+        const dateError = document.getElementById('date-error');
+
+        function validateDates() {
+            if (tanggalPinjam.value && tanggalKembali.value) {
+                if (new Date(tanggalKembali.value) < new Date(tanggalPinjam.value)) {
+                    dateError.style.display = 'block';
+                    tanggalKembali.setCustomValidity('Tanggal kembali tidak boleh sebelum tanggal pinjam.');
+                } else {
+                    dateError.style.display = 'none';
+                    tanggalKembali.setCustomValidity('');
+                }
+            }
+        }
+
+        tanggalPinjam.addEventListener('change', validateDates);
+        tanggalKembali.addEventListener('change', validateDates);
+
+        tanggalPinjam.addEventListener('change', function() {
+            tanggalKembali.min = tanggalPinjam.value;
+        });
+    });
+</script>

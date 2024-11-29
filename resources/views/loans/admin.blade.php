@@ -29,7 +29,6 @@
                             <th scope="col" class="px-4 py-3">Tanggal Pinjam</th>
                             <th scope="col" class="px-4 py-3">Tanggal Kembali</th>
                             <th scope="col" class="px-4 py-3">Status</th>
-                            <th scope="col" class="px-4 py-3">Pengembalian</th>
                             <th scope="col" class="px-4 py-3">Aksi</th>
                         </tr>
                         </thead>
@@ -41,17 +40,16 @@
                                 <td class="px-4 py-3">{{ $loan->books_name }}</td>
                                 <td class="px-4 py-3">{{ $loan->tanggal_pinjam }}</td>
                                 <td class="px-4 py-3">{{ $loan->tanggal_kembali }}</td>
-                                <td class="px-4 py-3">{{ $loan->status }}</td>
                                 <td class="px-4 py-3">
                                     @if($loan->status == 'dikembalikan')
                                         <span class="text-green-600 dark:text-green-400">Dikembalikan</span>
                                     @else
-                                        <span class="text-red-600 dark:text-red-400">Belum Dikembalikan</span>
+                                        <span class="text-red-600 dark:text-red-400">Dipinjam</span>
                                     @endif
                                 </td>
 
                                 <td class="px-4 py-3">
-                                    @if($loan->status == 'Belum Dikembalikan')
+                                    @if($loan->status != 'dikembalikan')
                                         <a href="{{ route('loans.kembali', ['id' => $loan->id]) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Kembalikan</a>
                                     @endif
                                     <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" class="inline" id="deleteLoanForm-{{ $loan->id }}">
