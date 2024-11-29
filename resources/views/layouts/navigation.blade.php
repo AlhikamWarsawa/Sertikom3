@@ -74,12 +74,12 @@
                     <x-sidebar-dropdown-link :href="route('loans.index')" :active="request()->routeIs('loans.index')">
                         Daftar Buku
                     </x-sidebar-dropdown-link>
-{{--                    <x-sidebar-dropdown-link :href="route('loans.pinjam')" :active="request()->routeIs('loans.pinjam')">--}}
-{{--                        Tambah Peminjaman--}}
-{{--                    </x-sidebar-dropdown-link>--}}
-{{--                    <x-sidebar-dropdown-link :href="route('loans.kembali')" :active="request()->routeIs('loans.kembali')">--}}
-{{--                        Daftar Pengembalian--}}
-{{--                    </x-sidebar-dropdown-link>--}}
+                    <x-sidebar-dropdown-link :href="route('loans.pinjam')" :active="request()->routeIs('loans.pinjam')">
+                        Tambah Peminjaman
+                    </x-sidebar-dropdown-link>
+                    <x-sidebar-dropdown-link :href="route('loans.kembali')" :active="request()->routeIs('loans.kembali')">
+                        Daftar Pengembalian
+                    </x-sidebar-dropdown-link>
                 </x-sidebar-dropdown>
             </ul>
             </ul>

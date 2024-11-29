@@ -31,6 +31,7 @@
                             <th scope="col" class="px-4 py-3">ID</th>
                             <th scope="col" class="px-4 py-3">Nama</th>
                             <th scope="col" class="px-4 py-3">Email</th>
+                            <th scope="col" class="px-4 py-3">Role</th>
                             <th scope="col" class="px-4 py-3">Aksi</th>
                         </tr>
                         </thead>
@@ -40,6 +41,7 @@
                                 <td class="px-4 py-3">{{ $member->id }}</td>
                                 <td class="px-4 py-3">{{ $member->name }}</td>
                                 <td class="px-4 py-3">{{ $member->email }}</td>
+                                <td class="px-4 py-3">{{ $member->role }}</td>
                                 <td class="px-4 py-3">
                                     <a href="{{ route('members.edit', $member->id) }}"
                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>

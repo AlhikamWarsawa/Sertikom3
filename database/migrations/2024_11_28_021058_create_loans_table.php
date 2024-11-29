@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->string('members_name');
-            $table->unsignedBigInteger('books_id');
+            $table->string('books_name');
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali')->nullable();
             $table->enum('status', ['dipinjam', 'dikembalikan'])->default('dipinjam');
