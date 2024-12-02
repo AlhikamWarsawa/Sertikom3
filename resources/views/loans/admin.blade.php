@@ -23,7 +23,6 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-4 py-3">ID</th>
                             <th scope="col" class="px-4 py-3">Nama Anggota</th>
                             <th scope="col" class="px-4 py-3">Judul Buku</th>
                             <th scope="col" class="px-4 py-3">Tanggal Pinjam</th>
@@ -35,7 +34,6 @@
                         <tbody>
                         @foreach($admins as $loan)
                             <tr class="border-b dark:border-gray-700">
-                                <td class="px-4 py-3">{{ $loan->id }}</td>
                                 <td class="px-4 py-3">{{ $loan->members_name }}</td>
                                 <td class="px-4 py-3">{{ $loan->books_name }}</td>
                                 <td class="px-4 py-3">{{ $loan->tanggal_pinjam }}</td>
@@ -43,13 +41,20 @@
                                 <td class="px-4 py-3">
                                     @if($loan->status == 'dikembalikan')
                                         <span class="text-green-600 dark:text-green-400">Dikembalikan</span>
+                                    @elseif($loan->status == 'pending')
+                                        <span class="text-yellow-600 dark:text-yellow-400">Pending</span>
                                     @else
                                         <span class="text-red-600 dark:text-red-400">Dipinjam</span>
                                     @endif
                                 </td>
-
                                 <td class="px-4 py-3">
-                                    @if($loan->status != 'dikembalikan')
+                                    @if($loan->status == 'pending')
+                                        <form action="{{ route('loans.confirm', $loan->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="font-medium text-green-600 dark:text-green-500 hover:underline">Konfirmasi</button>
+                                        </form>
+                                    @elseif($loan->status != 'dikembalikan')
                                         <a href="{{ route('loans.kembali', ['id' => $loan->id]) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Kembalikan</a>
                                     @endif
                                     <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" class="inline" id="deleteLoanForm-{{ $loan->id }}">
@@ -57,6 +62,7 @@
                                         @method('DELETE')
                                         <button type="button" id="deleteLoanButton-{{ $loan->id }}" class="font-medium text-red-600 dark:text-red-500 hover:underline ml-3" data-modal-target="deleteLoanModal-{{ $loan->id }}" data-modal-toggle="deleteLoanModal-{{ $loan->id }}">Delete</button>
                                     </form>
+
                                     <div id="deleteLoanModal-{{ $loan->id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
                                         <div class="relative p-4 w-full max-w-md h-full md:h-auto">
                                             <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">

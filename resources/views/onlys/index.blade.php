@@ -36,6 +36,16 @@
                                 <p>Stok: <span
                                         class="font-semibold {{ $only->stok > 0 ? 'text-green-600' : 'text-red-600' }}">{{ $only->stok }}</span>
                                 </p>
+                                <p>Status:
+                                    <span
+                                        class="font-semibold {{ $only->status !== 0 ? 'text-green-600' : 'text-red-600' }}">
+                                        @if ($only->status > 0)
+                                            Tersedia
+                                        @else
+                                            Tidak Tersedia
+                                        @endif
+                                    </span>
+                                </p>
                                 <p>Tahun Terbit: {{ date('d-M-Y', strtotime($only->terbit)) }}</p>
                             </div>
                             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">{{ Str::limit($only->deskripsi, 20) }}</p>
@@ -43,9 +53,9 @@
                                 <form action="{{ route('onlys.borrow', $only->id) }}" method="POST">
                                     @csrf
                                     <button type="submit"
-                                            class="block w-full text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 {{ $only->stok <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                        {{ $only->stok <= 0 ? 'disabled' : '' }}>
-                                        {{ $only->stok > 0 ? 'Pinjam' : 'Habis' }}
+                                            class="block w-full text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 {{ $only->stok <= 0 || $only->status === 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                        {{ $only->stok <= 0 || $only->status === 0 ? 'disabled' : '' }}>
+                                        {{ $only->stok > 0 && $only->status !== 0 ? 'Pinjam' : 'Tidak Tersedia' }}
                                     </button>
                                 </form>
                             </div>

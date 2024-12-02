@@ -28,7 +28,6 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-4 py-3">ID</th>
                             <th scope="col" class="px-4 py-3">Nama</th>
                             <th scope="col" class="px-4 py-3">Email</th>
                             <th scope="col" class="px-4 py-3">Role</th>
@@ -38,7 +37,6 @@
                         <tbody>
                         @foreach($members as $member)
                             <tr class="border-b dark:border-gray-700">
-                                <td class="px-4 py-3">{{ $member->id }}</td>
                                 <td class="px-4 py-3">{{ $member->name }}</td>
                                 <td class="px-4 py-3">{{ $member->email }}</td>
                                 <td class="px-4 py-3">{{ $member->role }}</td>

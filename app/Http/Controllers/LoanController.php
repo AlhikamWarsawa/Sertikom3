@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\History;
 use App\Models\Loan;
 use App\Models\Book;
 use App\Models\User;
@@ -70,5 +71,37 @@ class LoanController extends Controller
         $loan = Loan::findOrFail($id);
         $loan->delete();
         return redirect()->route('loans.index')->with('success', 'Loan deleted successfully');
+    }
+    public function adminView()
+    {
+        $pendingLoans = Loan::where('status', 'pending')->get();
+        return view('loans.confirm', compact('pendingLoans'));
+    }
+
+    public function confirm($id)
+    {
+        $loan = Loan::findOrFail($id);
+        $book = Book::where('judul', $loan->books_name)->first();
+        $user = User::where('name', $loan->members_name)->first();
+
+        if ($book && $book->stok > 0) {
+            $loan->status = 'dipinjam';
+            $loan->save();
+
+            $book->stok -= 1;
+            $book->save();
+
+            History::create([
+                'user_id' => $user->id,
+                'book_id' => $book->id,
+                'judul' => $book->judul,
+                'status' => $book->status,
+                'tanggal_pinjam' => now(),
+            ]);
+
+            return redirect()->route('loans.index')->with('success', 'Peminjaman berhasil dikonfirmasi, stok buku berkurang, dan riwayat peminjaman dicatat.');
+        }
+
+        return redirect()->route('loans.index')->with('error', 'Gagal mengkonfirmasi peminjaman. Stok buku tidak mencukupi.');
     }
 }

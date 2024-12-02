@@ -29,22 +29,24 @@ class OnlyController extends Controller
     public function borrow($id)
     {
         $book = Book::findOrFail($id);
+        $user = Auth::user();
 
-        if ($book->stok > 0) {
-            $book->stok -= 1;
-            $book->save();
-
-            History::create([
-                'user_id' => Auth::id(),
-                'book_id' => $book->id,
-                'judul' => $book->judul,
-                'tanggal_pinjam' => now(),
-            ]);
-
-            return redirect()->route('onlys.index')->with('success', 'Buku berhasil dipinjam.');
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please log in to borrow a book.');
         }
 
-        return redirect()->route('onlys.index')->with('error', 'Stok buku habis.');
+        if ($book->stok > 0 && $book->status !== 0) {
+            Loan::create([
+                'members_name' => $user->name,
+                'books_name' => $book->judul,
+                'tanggal_pinjam' => now(),
+                'status' => 'pending',
+            ]);
+
+            return redirect()->route('onlys.index')->with('success', 'Permintaan peminjaman buku berhasil. Menunggu konfirmasi admin.');
+        }
+
+        return redirect()->route('onlys.index')->with('error', 'Buku tidak tersedia untuk dipinjam.');
     }
 
     public function history()
@@ -70,5 +72,19 @@ class OnlyController extends Controller
             });
 
         return view('onlys.notification', compact('notifications'));
+    }
+
+    public function memberDashboard()
+    {
+        $user = Auth::user();
+        $borrowedBooksCount = Loan::where('members_name', $user->name)->where('status', 'dipinjam')->count();
+        $availableBooksCount = Book::where('stok', '>', 0)->count();
+        $totalBorrowings = Loan::where('members_name', $user->name)->count();
+        $borrowedBooks = Loan::where('members_name', $user->name)
+            ->where('status', 'dipinjam')
+            ->with('book')
+            ->get();
+
+        return view('member_dashboard', compact('borrowedBooksCount', 'availableBooksCount', 'totalBorrowings', 'borrowedBooks'));
     }
 }

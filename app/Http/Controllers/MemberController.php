@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\History;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -46,7 +48,7 @@ class MemberController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:members,email,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
         ]);
 
@@ -62,9 +64,12 @@ class MemberController extends Controller
 
     public function destroy($id)
     {
-        $member = User::findOrFail($id);
-        $member->delete();
+        DB::beginTransaction();
+            $member = User::findOrFail($id);
+            History::where('user_id', $id)->delete();
+            $member->delete();
 
-        return redirect()->route('members.index');
+            DB::commit();
+            return redirect()->route('members.index')->with('success', 'Member deleted successfully');
     }
 }
