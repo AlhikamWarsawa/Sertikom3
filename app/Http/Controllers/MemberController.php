@@ -11,7 +11,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = User::paginate(2);
+        $members = User::latest()->paginate(5);
         return view('members.index', compact('members'));
     }
 
@@ -65,11 +65,11 @@ class MemberController extends Controller
     public function destroy($id)
     {
         DB::beginTransaction();
-            $member = User::findOrFail($id);
-            History::where('user_id', $id)->delete();
-            $member->delete();
+        $member = User::findOrFail($id);
+        History::where('user_id', $id)->delete();
+        $member->delete();
 
-            DB::commit();
-            return redirect()->route('members.index')->with('success', 'Member deleted successfully');
+        DB::commit();
+        return redirect()->route('members.index')->with('success', 'Member deleted successfully');
     }
 }
