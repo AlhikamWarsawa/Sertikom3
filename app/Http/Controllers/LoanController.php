@@ -12,7 +12,7 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $admins = Loan::latest()->paginate(5);
+        $admins = Loan::paginate(2);
         return view('loans.admin', compact('admins'));
     }
 
@@ -57,16 +57,11 @@ class LoanController extends Controller
         ]);
 
         $loan = Loan::findOrFail($id);
-        $book = Book::where('judul', $loan->books_name)->first();
 
         $loan->status = 'dikembalikan';
         $loan->tanggal_kembali = $request->tanggal_kembali;
-        $loan->save();
 
-        if ($book) {
-            $book->stok += 1;
-            $book->save();
-        }
+        $loan->save();
 
         return redirect()->route('loans.index')->with('success', 'Buku berhasil dikembalikan');
     }
@@ -83,19 +78,14 @@ class LoanController extends Controller
         return view('loans.confirm', compact('pendingLoans'));
     }
 
-    public function confirm(Request $request, $id)
+    public function confirm($id)
     {
-        $request->validate([
-            'tanggal_kembali' => 'required|date',
-        ]);
-
         $loan = Loan::findOrFail($id);
         $book = Book::where('judul', $loan->books_name)->first();
         $user = User::where('name', $loan->members_name)->first();
 
         if ($book && $book->stok > 0) {
             $loan->status = 'dipinjam';
-            $loan->tanggal_kembali = $request->tanggal_kembali;
             $loan->save();
 
             $book->stok -= 1;
@@ -107,7 +97,6 @@ class LoanController extends Controller
                 'judul' => $book->judul,
                 'status' => $book->status,
                 'tanggal_pinjam' => now(),
-                'tanggal_kembali' => $request->tanggal_kembali,
             ]);
 
             return redirect()->route('loans.index')->with('success', 'Peminjaman berhasil dikonfirmasi, stok buku berkurang, dan riwayat peminjaman dicatat.');
