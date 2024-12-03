@@ -12,7 +12,7 @@ class LoanController extends Controller
 {
     public function index()
     {
-        $admins = Loan::paginate(2);
+        $admins = Loan::paginate(5);
         return view('loans.admin', compact('admins'));
     }
 
