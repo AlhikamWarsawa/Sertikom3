@@ -67,7 +67,7 @@ class OnlyController extends Controller
             ->with('book')
             ->get()
             ->map(function ($loan) {
-                $loan->days_left = now()->diffInDays($loan->tanggal_kembali, false);
+                $loan->days_left = round(now()->diffInDays($loan->tanggal_kembali, false));
                 return $loan;
             });
 
