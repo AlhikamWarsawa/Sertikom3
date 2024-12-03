@@ -46,7 +46,10 @@ class LoanController extends Controller
 
     public function kembali()
     {
-        $loansToReturn = Loan::where('status', '!=', 'dikembalikan')->get();
+        $loansToReturn = Loan::where('status', 'dipinjam')
+            ->orderBy('tanggal_pinjam', 'desc')
+            ->get();
+
         return view('loans.kembali', compact('loansToReturn'));
     }
 
